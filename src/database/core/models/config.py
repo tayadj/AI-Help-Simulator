@@ -1,0 +1,6 @@
+
+
+
+class ModelConfig:
+
+	pass
