@@ -16,9 +16,9 @@ class ModelUser:
         __tablename__ = 'users'
 
         id: sqlalchemy.orm.Mapped[int] = sqlalchemy.orm.mapped_column(sqlalchemy.BigInteger, primary_key = True)
-        name: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(nullable = False)
-        email: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(unique = True, nullable = False)
-        password: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(nullable = False)
+        name: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(sqlalchemy.String(255), nullable = False)
+        email: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(sqlalchemy.String(255), unique = True, nullable = False)
+        password: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(sqlalchemy.String(255), nullable = False)
 
     async def create_user(self, database: sqlalchemy.ext.asyncio.AsyncSession, id: int, name: str, email: str, password: str):
 

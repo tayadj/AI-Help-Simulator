@@ -1,4 +1,4 @@
-import models
+from .models import ModelUser, ModelConfig
 
 import sqlalchemy
 import sqlalchemy.ext.asyncio
@@ -25,5 +25,5 @@ class Database:
 			expire_on_commit = False
 		)
 
-		self.model_user = models.ModelUser()
-		self.model_config = models.ModelConfig()
+		self.model_user = ModelUser()
+		self.model_config = ModelConfig()

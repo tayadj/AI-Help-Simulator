@@ -16,8 +16,8 @@ class ModelConfig:
         __tablename__ = 'configs'
 
         id: sqlalchemy.orm.Mapped[int] = sqlalchemy.orm.mapped_column(sqlalchemy.BigInteger, primary_key = True)
-        key: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(unique = True, nullable = False)
-        value: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(nullable = False)
+        key: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(sqlalchemy.String(255), unique = True, nullable = False)
+        value: sqlalchemy.orm.Mapped[str] = sqlalchemy.orm.mapped_column(sqlalchemy.String(255), nullable = False)
 
     async def create_config(self, database: sqlalchemy.ext.asyncio.AsyncSession, id: int, key: str, value: str):
 
