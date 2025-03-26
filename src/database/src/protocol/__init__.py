@@ -1,2 +1,2 @@
-from .database_pb2_grpc import DatabaseServiceServicer, add_DatabaseServiceServicer_to_server
-from .database_pb2 import UserResponse, ConfigResponse
+from .database_pb2_grpc import *
+from .database_pb2 import *

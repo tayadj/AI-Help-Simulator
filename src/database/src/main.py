@@ -9,25 +9,32 @@ import sqlalchemy.ext.asyncio
 
 
 
-class DatabaseService(protocol.DatabaseServiceServicer):
+class DatabaseService(protocol.database_pb2_grpc.DatabaseServiceServicer):
 
 	def __init__(self, database):
 
 		self.database = database
 
-	async def CreateUser(self, request, context):
+	def CreateUser(self, request, context):
 
-		async with self.database.session_local() as session:
+		async def _create_user(self, request):
 
-			user = await self.database.model_user.create_user(
-				database = session, id = request.id, name = request.name, email = request.email, password = request.password
-			)
-			return UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+			async with self.database.session_local() as session:
+
+				user = await self.database.model_user.create_user(
+					database = session, id = request.id, name = request.name, email = request.email, password = request.password
+				)
+				print(user)
+				return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+
+		return asyncio.run(_create_user(self, request))
+
+	
 
 def serve(database):
 
 	server = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers = 10))
-	protocol.add_DatabaseServiceServicer_to_server(DatabaseService(database), server)
+	protocol.database_pb2_grpc.add_DatabaseServiceServicer_to_server(DatabaseService(database), server)
 	server.add_insecure_port('[::]:50051')
 	server.start()
 	server.wait_for_termination()
