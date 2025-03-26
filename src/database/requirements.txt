@@ -1,6 +1,9 @@
 aiogram
 aioodbc
 alembic
+asyncio
+grpcio
+grpcio-tools
 pydantic
 pydantic-settings
 sqlalchemy

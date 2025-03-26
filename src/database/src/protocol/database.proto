@@ -19,6 +19,7 @@ message UserResponse {
   int64 id = 1;
   string name = 2;
   string email = 3;
+  string password = 4;
 }
 
 message ConfigResponse {
@@ -27,7 +28,7 @@ message ConfigResponse {
   string value = 3;
 }
 
-service ModelsService {
+service DatabaseService {
   rpc CreateUser(UserRequest) returns (UserResponse);
   rpc ReadUser(UserRequest) returns (UserResponse);
   rpc UpdateUser(UserRequest) returns (UserResponse);
