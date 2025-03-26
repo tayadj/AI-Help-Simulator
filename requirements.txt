@@ -1,0 +1,6 @@
+aiogram
+aioodbc
+alembic
+pydantic
+pydantic-settings
+sqlalchemy
