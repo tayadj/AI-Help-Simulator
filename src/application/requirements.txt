@@ -1,0 +1,6 @@
+asyncio
+grpcio
+grpcio-tools
+pyaudio
+pydantic
+pydantic-settings
