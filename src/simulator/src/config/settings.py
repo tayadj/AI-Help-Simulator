@@ -12,4 +12,4 @@ class Settings(pydantic_settings.BaseSettings):
 		extra = 'ignore'
 	)
 
-	OPENAI_API_TOKEN: pydantic.SecretStr
+	OPENAI_API_KEY: pydantic.SecretStr
