@@ -5,6 +5,7 @@ import protocol
 import asyncio
 import concurrent
 import grpc
+import signal
 import sqlalchemy.ext.asyncio
 
 
@@ -15,29 +16,57 @@ class DatabaseService(protocol.database_pb2_grpc.DatabaseServiceServicer):
 
 		self.database = database
 
-	def CreateUser(self, request, context):
+	async def CreateUser(self, request, context):
 
-		async def _create_user(self, request):
+		async with self.database.session_local() as session:
 
-			async with self.database.session_local() as session:
+			user = await self.database.model_user.create_user(database = session, id = request.id, name = request.name, email = request.email, password = request.password)
 
-				user = await self.database.model_user.create_user(
-					database = session, id = request.id, name = request.name, email = request.email, password = request.password
-				)
-				print(user)
-				return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+			return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
 
-		return asyncio.run(_create_user(self, request))
+	async def ReadUser(self, request, context):
 
-	
+		async with self.database.session_local() as session:
 
-def serve(database):
+			user = await self.database.model_user.read_user(database = session, id = request.id)
 
-	server = grpc.server(concurrent.futures.ThreadPoolExecutor(max_workers = 10))
+			return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+
+	async def UpdateUser(self, request, context):
+
+		async with self.database.session_local() as session:
+
+			user = await self.database.model_user.update_user(database = session, id = request.id, name = request.name, email = request.email, password = request.password)
+
+			return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+
+	async def DeleteUser(self, request, context):
+
+		async with self.database.session_local() as session:
+
+			user = await self.database.model_user.delete_user(database = session, id = request.id)
+
+			return protocol.database_pb2.UserResponse(id = user.id, name = user.name, email = user.email, password = user.password)
+
+async def serve(database):
+
+	server = grpc.aio.server()
 	protocol.database_pb2_grpc.add_DatabaseServiceServicer_to_server(DatabaseService(database), server)
 	server.add_insecure_port('[::]:50051')
-	server.start()
-	server.wait_for_termination()
+	await server.start()
+	print("Server started. Listening on port 50051...")
+
+	stop_event = asyncio.Event()
+
+	def shutdown_signal(*args):
+		print("Shutting down server...")
+		stop_event.set()
+
+	signal.signal(signal.SIGINT, shutdown_signal)
+	signal.signal(signal.SIGTERM, shutdown_signal)
+
+	await stop_event.wait()
+	await server.stop(grace = 5)
 
 
 
