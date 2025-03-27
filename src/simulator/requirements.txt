@@ -1,5 +1,8 @@
 asyncio
 grpcio
 grpcio-tools
+openai
+openai-agents
+openai-agents[voice]
 pydantic
 pydantic-settings
