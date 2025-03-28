@@ -15,5 +15,5 @@ message HistoryRequest {}
 
 service SimulatorService {
 	rpc StreamAudio(stream AudioStream) returns (stream AudioStream);
-	rpc GetConversationHistory(EmptyRequest) returns (ConversationHistory);
+	rpc GetConversationHistory(HistoryRequest) returns (HistoryResponse);
 }
