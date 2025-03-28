@@ -1,3 +1,6 @@
+import core.workflows
+import core.assistants
+
 import agents
 import agents.voice
 import asyncio
@@ -22,11 +25,7 @@ class Engine:
 
 	def setup(self):
 
-		self.agent = agents.Agent(
-			name = 'Assistant',
-			instructions = 'You are imitating a client for a call center simulator',
-			model = 'gpt-4o-mini'
-		)
+		self.agent = core.assistants.Assistant
 		
 		self.workflow = agents.voice.SingleAgentVoiceWorkflow(self.agent)
 		self.pipeline = agents.voice.VoicePipeline(
