@@ -16,7 +16,13 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 
 	async def StreamAudio(self, request_iterator, context):
 
-		pass
+		print("Streaming audio started...")
+
+		async for chunk in request_iterator:
+
+			print(f"Received chunk of size: {len(chunk.audio_data)} bytes, format: {chunk.audio_format}")
+
+			yield protocol.simulator_pb2.AudioStream(audio_data = chunk.audio_data.upper(), audio_format = chunk.audio_format)           
 
 	async def GetConversationHistory(self, request, context):
 
