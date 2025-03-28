@@ -1,6 +1,9 @@
+import config
+import core
+
 import asyncio
-import os
 import grpc
+import os
 import sys
 
 sys.path.append(os.path.dirname(__file__) + '/../..')
@@ -9,6 +12,19 @@ import database.src.protocol
 import simulator.src.protocol
 
 
+
+if __name__ == "__main__":
+
+	settings = config.Settings()
+	application = core.Application()
+
+    #asyncio.run(main())
+
+
+
+
+
+"""
 # to move 
 async def stream_audio(path):
 
@@ -42,7 +58,7 @@ async def main():
     
         stub = simulator.src.protocol.simulator_pb2_grpc.SimulatorServiceStub(channel)
 
-        file = "C:\\AI\\171_request.mp3"
+        file = "C:\\AI\\request.mp3"
         async for response in stub.StreamAudio(stream_audio(file)):
 
             print(f"Received processed chunk of size: {len(response.audio_data)} bytes, format: {response.audio_format}")
@@ -50,6 +66,9 @@ async def main():
 
 
 
+
+
 if __name__ == "__main__":
 
     asyncio.run(main())
+"""

@@ -3,6 +3,7 @@ import core
 import protocol
 
 import asyncio
+import io
 import grpc
 import signal
 
@@ -17,12 +18,36 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 	async def StreamAudio(self, request_iterator, context):
 
 		print("Streaming audio started...")
+		audio_buffer = io.BytesIO()
 
 		async for chunk in request_iterator:
 
 			print(f"Received chunk of size: {len(chunk.audio_data)} bytes, format: {chunk.audio_format}")
+			audio_buffer.write(chunk.audio_data)
 
-			yield protocol.simulator_pb2.AudioStream(audio_data = chunk.audio_data.upper(), audio_format = chunk.audio_format)           
+		audio_buffer.seek(0)
+		voice_input = audio_buffer.read()
+		response_stream = self.engine.process(voice_input)
+
+		async for event in response_stream:
+
+			print(event)
+			print(event.data)
+
+			if event.type == 'voice_stream_event_audio':
+
+				print(event.data, '\n\n\n')
+				response = protocol.simulator_pb2.AudioStream(
+					audio_data = event.data,
+					audio_format = 'mp3'
+				)
+
+				yield response
+					
+			elif event.type == 'voice_stream_event_lifecycle':
+
+				print(f'Lifecycle event: {event.event}')
+
 
 	async def GetConversationHistory(self, request, context):
 

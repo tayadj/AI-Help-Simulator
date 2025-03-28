@@ -3,3 +3,4 @@ grpcio
 grpcio-tools
 pydantic
 pydantic-settings
+sounddevice
