@@ -1,0 +1,9 @@
+asyncio
+grpcio
+grpcio-tools
+numpy
+openai
+openai-agents
+openai-agents[voice]
+pydantic
+pydantic-settings
