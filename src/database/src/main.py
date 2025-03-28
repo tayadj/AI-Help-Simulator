@@ -3,7 +3,6 @@ import core
 import protocol
 
 import asyncio
-import concurrent
 import grpc
 import signal
 import sqlalchemy.ext.asyncio

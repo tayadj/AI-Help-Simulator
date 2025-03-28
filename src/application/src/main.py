@@ -6,6 +6,7 @@ import sys
 sys.path.append(os.path.dirname(__file__) + '/../..')
 
 import database.src.protocol
+import simulator.src.protocol
 
 
 async def main():
@@ -20,6 +21,19 @@ async def main():
 
         response = await stub.ReadUser(request)  
         print(response)
+
+    async with grpc.aio.insecure_channel("localhost:50052") as channel: 
+    
+        stub = simulator.src.protocol.simulator_pb2_grpc.SimulatorServiceStub(channel)
+        '''
+        request = simulator.src.protocol.simulator_pb2.UserRequest(
+            id = 1
+        )
+
+        response = await stub.ReadUser(request)  
+        print(response)
+        '''
+        print(stub)
 
 
 
