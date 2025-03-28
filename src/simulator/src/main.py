@@ -66,20 +66,22 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 		pass
 
 
-async def serve(engine):
+async def serve(settings, engine):
+
+	port = settings.PORT.get_secret_value()
 
 	server = grpc.aio.server()
 	protocol.simulator_pb2_grpc.add_SimulatorServiceServicer_to_server(SimulatorService(engine), server)
-	server.add_insecure_port('[::]:50052')
+	server.add_insecure_port(port)
 
 	await server.start()
-	print("Server started. Listening on port 50052...")
+	print(f'Server started. Listening on port {port}...')
 
 	stop_event = asyncio.Event()
 
 	def shutdown_signal(*args):
 
-		print("Shutting down server...")
+		print('Shutting down server...')
 		stop_event.set()
 
 	signal.signal(signal.SIGINT, shutdown_signal)
@@ -93,4 +95,4 @@ if __name__ == '__main__':
 	settings = config.Settings()
 	engine = core.Engine(settings.OPENAI_API_KEY.get_secret_value())
 
-	asyncio.run(serve(engine))
+	asyncio.run(serve(settings, engine))

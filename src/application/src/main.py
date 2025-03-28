@@ -20,9 +20,20 @@ async def stream_audio_input(engine):
 
 		yield simulator.src.protocol.simulator_pb2.AudioStream(data = data.tobytes())
 
-async def main(engine):
+async def main(settings, engine):
 
-	async with grpc.aio.insecure_channel("localhost:50052") as channel: 
+	async with grpc.aio.insecure_channel(settings.DATABASE_PORT.get_secret_value()) as channel: 
+	
+		stub = database.src.protocol.database_pb2_grpc.DatabaseServiceStub(channel)
+
+		request = database.src.protocol.database_pb2.UserRequest(
+			id = 1
+		)
+
+		response = await stub.ReadUser(request)  
+		print(response)
+
+	async with grpc.aio.insecure_channel(settings.SIMULATOR_PORT.get_secret_value()) as channel: 
 	
 		stub = simulator.src.protocol.simulator_pb2_grpc.SimulatorServiceStub(channel)
 
@@ -41,4 +52,4 @@ if __name__ == "__main__":
 	settings = config.Settings()
 	engine = core.Engine()
 
-	asyncio.run(main(engine))
+	asyncio.run(main(settings, engine))

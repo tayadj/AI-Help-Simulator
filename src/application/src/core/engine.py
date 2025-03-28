@@ -50,4 +50,4 @@ class Engine:
 
 		self.output_stream.write(data)
 
-		self.output_stream.close()
+		self.output_stream.stop()

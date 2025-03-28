@@ -13,3 +13,4 @@ class Settings(pydantic_settings.BaseSettings):
 	)
 
 	OPENAI_API_KEY: pydantic.SecretStr
+	PORT: pydantic.SecretStr

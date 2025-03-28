@@ -79,20 +79,22 @@ class DatabaseService(protocol.database_pb2_grpc.DatabaseServiceServicer):
 
 			return protocol.database_pb2.ConfigResponse(id = request.id, key = request.key, value = request.value)
 
-async def serve(database):
+async def serve(settings, database):
+
+	port = settings.PORT.get_secret_value()
 
 	server = grpc.aio.server()
 	protocol.database_pb2_grpc.add_DatabaseServiceServicer_to_server(DatabaseService(database), server)
-	server.add_insecure_port('[::]:50051')
+	server.add_insecure_port(port)
 
 	await server.start()
-	print("Server started. Listening on port 50051...")
+	print(f'Server started. Listening on port {port}...')
 
 	stop_event = asyncio.Event()
 
 	def shutdown_signal(*args):
 
-		print("Shutting down server...")
+		print('Shutting down server...')
 		stop_event.set()
 
 	signal.signal(signal.SIGINT, shutdown_signal)
@@ -108,4 +110,4 @@ if __name__ == "__main__":
 	settings = config.Settings()
 	database = core.Database(settings.DATABASE_URL.get_secret_value())
 
-	asyncio.run(serve(database))
+	asyncio.run(serve(settings, database))

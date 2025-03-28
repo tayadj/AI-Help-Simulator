@@ -11,3 +11,6 @@ class Settings(pydantic_settings.BaseSettings):
 		env_file_encoding = 'utf-8',
 		extra = 'ignore'
 	)
+
+	DATABASE_PORT: pydantic.SecretStr
+	SIMULATOR_PORT: pydantic.SecretStr

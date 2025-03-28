@@ -13,3 +13,4 @@ class Settings(pydantic_settings.BaseSettings):
 	)
 
 	DATABASE_URL: pydantic.SecretStr
+	PORT: pydantic.SecretStr
