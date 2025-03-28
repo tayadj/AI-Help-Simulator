@@ -4,6 +4,7 @@ import protocol
 
 import asyncio
 import io
+import numpy
 import grpc
 import signal
 
@@ -18,15 +19,13 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 	async def StreamAudio(self, request_iterator, context):
 
 		print("Streaming audio started...")
-		audio_buffer = io.BytesIO()
+		voice_input = numpy.array([])
 
 		async for chunk in request_iterator:
 
 			print(f"Received chunk of size: {len(chunk.audio_data)} bytes, format: {chunk.audio_format}")
-			audio_buffer.write(chunk.audio_data)
+			#voice_input.append(chunk.audio_data)
 
-		audio_buffer.seek(0)
-		voice_input = audio_buffer.read()
 		response_stream = self.engine.process(voice_input)
 
 		async for event in response_stream:

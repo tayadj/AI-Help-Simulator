@@ -31,10 +31,8 @@ class Engine:
 		)		
 		
 	async def process(self, voice_input):
-
-		print(numpy.array(voice_input))
 		
-		await self.buffer.add_audio(numpy.array(voice_input))
+		await self.buffer.add_audio(voice_input)
 		self.result = await self.pipeline.run(self.buffer)
 
 		async for event in self.result.stream():
