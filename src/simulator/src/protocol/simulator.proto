@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package simulator;
+
+message AudioStream {
+	bytes audio_data = 1;
+	string audio_format = 2;
+}
+
+message HistoryResponse {
+	map<string, string> history = 1;
+}
+
+message HistoryRequest {}
+
+service SimulatorService {
+	rpc StreamAudio(stream AudioStream) returns (stream AudioStream);
+	rpc GetConversationHistory(EmptyRequest) returns (ConversationHistory);
+}
