@@ -1,6 +1,7 @@
 asyncio
 grpcio
 grpcio-tools
+numpy
 pydantic
 pydantic-settings
 sounddevice

@@ -9,6 +9,13 @@ import grpc
 import signal
 
 
+import os
+
+'''
+os.environ["GRPC_TRACE"] = "all"
+os.environ["GRPC_VERBOSITY"] = "DEBUG"
+'''
+
 
 class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 
@@ -19,34 +26,41 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 	async def StreamAudio(self, request_iterator, context):
 
 		print("Streaming audio started...")
+
 		voice_input = numpy.array([])
 
 		async for chunk in request_iterator:
 
-			print(f"Received chunk of size: {len(chunk.audio_data)} bytes, format: {chunk.audio_format}")
-			#voice_input.append(chunk.audio_data)
+			print(f"Received chunk of size: {len(chunk.data)} bytes.")
 
-		response_stream = self.engine.process(voice_input)
+			voice_input = numpy.concatenate((voice_input, numpy.frombuffer(chunk.data, dtype = numpy.int16)))			
 
-		async for event in response_stream:
+		# stream_audio_output = await self.engine.process(voice_input)
+
+		voice_input = voice_input.astype(numpy.int16)
+
+		yield protocol.simulator_pb2.AudioStream(data = voice_input.tobytes())
+
+		
+
+		'''async for event in stream_audio_output.stream():
 
 			print(event)
-			print(event.data)
 
 			if event.type == 'voice_stream_event_audio':
 
 				print(event.data, '\n\n\n')
 				response = protocol.simulator_pb2.AudioStream(
-					audio_data = event.data,
-					audio_format = 'mp3'
+					data = event.data
 				)
 
 				yield response
 					
 			elif event.type == 'voice_stream_event_lifecycle':
 
-				print(f'Lifecycle event: {event.event}')
+				print(f'Lifecycle event: {event.event}')'''
 
+		print("Streaming audio finished...")
 
 	async def GetConversationHistory(self, request, context):
 

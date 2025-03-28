@@ -31,9 +31,15 @@ class Engine:
 		)		
 		
 	async def process(self, voice_input):
-		
+
 		await self.buffer.add_audio(voice_input)
-		self.result = await self.pipeline.run(self.buffer)
+		result = await self.pipeline.run(self.buffer) # cause socks proxy that's forbidden
+
+		#return result
+
+		return None
+
+		'''
 
 		async for event in self.result.stream():
 
@@ -46,3 +52,4 @@ class Engine:
 			elif event.type == 'voice_stream_event_lifecycle':
 
 				print(f'Lifecycle event: {event.event}') 
+		'''

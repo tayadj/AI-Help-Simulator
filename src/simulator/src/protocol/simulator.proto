@@ -3,8 +3,7 @@ syntax = "proto3";
 package simulator;
 
 message AudioStream {
-	bytes audio_data = 1;
-	string audio_format = 2;
+	bytes data = 1;
 }
 
 message HistoryResponse {
