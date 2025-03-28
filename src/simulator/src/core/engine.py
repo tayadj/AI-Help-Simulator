@@ -1,6 +1,3 @@
-import core.workflows
-import core.assistants
-
 import agents
 import agents.voice
 import asyncio
@@ -25,7 +22,11 @@ class Engine:
 
 	def setup(self):
 
-		self.agent = core.assistants.Assistant
+		self.agent = agents.Agent(
+			name = 'Assistant',
+			instructions = 'You are imitating a client for a call center simulator',
+			model = 'gpt-4o-mini'
+		)
 		
 		self.workflow = agents.voice.SingleAgentVoiceWorkflow(self.agent)
 		self.pipeline = agents.voice.VoicePipeline(
@@ -34,42 +35,20 @@ class Engine:
 			tts_model = 'gpt-4o-mini-tts'
 		)
 		
-	async def process(self):
+	async def process(self, voice_input):
 
-		pass
+		# voice_input is passed via gRPC
 
-'''
-class Engine:
+		self.result = await self.pipeline.run(voice_input)
 
-	def __init__(self, openai_api_token: str):
+		print(self.result)
 
-		self.client = openai.AsyncOpenAI(api_key = openai_api_token)
+		async for event in self.result.stream():
 
-	async def text_to_speech(self, text: str):
+			if event.type == 'voice_stream_event_audio':
 
-		async with self.client.audio.speech.with_streaming_response.create(
-			model = 'gpt-4o-mini-tts',
-			input = text,
-			voice = 'coral',
-			instructions = 'Speak in a cheerful and positive tone',
-			response_format = 'wav'
-		) as response:
+				print(event) # pass it to main via gRPC
 
-			await openai.helpers.LocalAudioPlayer().play(response)
+			elif event.type == 'voice_stream_event_lifecycle':
 
-	async def speech_to_text(self, speech: str):
-
-		transcription = await self.client.audio.transcriptions.create(
-			model = "gpt-4o-transcribe", 
-			file = open(speech, 'rb')
-		)
-
-		print(transcription)
-
-		return transcription.text
-
-	async def process(self, query):
-
-		await self.text_to_speech(await self.speech_to_text(query))
-
-'''
+				print(event) 
