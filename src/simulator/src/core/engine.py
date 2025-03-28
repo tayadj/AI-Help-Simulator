@@ -6,6 +6,8 @@ import openai
 import openai.helpers
 import os
 
+os.environ['http_proxy'] = 'http://127.0.0.1:50053' # use websockets
+
 
 
 class Engine:
@@ -33,23 +35,10 @@ class Engine:
 	async def process(self, voice_input):
 
 		await self.buffer.add_audio(voice_input)
-		result = await self.pipeline.run(self.buffer) # cause socks proxy that's forbidden
+		result = await self.pipeline.run(self.buffer) # if http_proxy environment variable is not set causes socks proxy that's forbidden 
 
-		#return result
-
-		return None
-
-		'''
-
-		async for event in self.result.stream():
+		async for event in result.stream():
 
 			if event.type == 'voice_stream_event_audio':
 
-				print(f'Event audio: {event}')
-
 				yield event
-
-			elif event.type == 'voice_stream_event_lifecycle':
-
-				print(f'Lifecycle event: {event.event}') 
-		'''
