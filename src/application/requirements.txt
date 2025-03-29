@@ -1,5 +1,6 @@
 asyncio
 flask
+flask-socketio
 grpcio
 grpcio-tools
 numpy
