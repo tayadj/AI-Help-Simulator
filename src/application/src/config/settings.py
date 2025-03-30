@@ -12,5 +12,7 @@ class Settings(pydantic_settings.BaseSettings):
 		extra = 'ignore'
 	)
 
+	APPLICATION_SECRET_KEY: pydantic.SecretStr
 	DATABASE_PORT: pydantic.SecretStr
 	SIMULATOR_PORT: pydantic.SecretStr
+	
