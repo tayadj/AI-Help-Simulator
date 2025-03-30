@@ -16,7 +16,7 @@ os.environ["GRPC_TRACE"] = "all"
 os.environ["GRPC_VERBOSITY"] = "DEBUG"
 '''
 
-os.environ['http_proxy'] = 'http://127.0.0.1:40404'
+# os.environ['http_proxy'] = 'http://127.0.0.1:40404'
 
 
 
@@ -30,15 +30,13 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 
 		print("Streaming audio started...")
 
-		voice_input = numpy.array([])
-
 		async for chunk in request_iterator:
 
 			print(f"Received chunk of size: {len(chunk.data)} bytes.")
+			
+			yield protocol.simulator_pb2.AudioStream(data = (numpy.frombuffer(chunk.data, dtype = numpy.int16)).tobytes()) # loop-response
 
-			voice_input = numpy.concatenate((voice_input, numpy.frombuffer(chunk.data, dtype = numpy.int16)))		
-
-		yield protocol.simulator_pb2.AudioStream(data = (voice_input.astype(numpy.int16)).tobytes()) # loop-response
+		
 		
 		'''
 		# Realtime communication section begin
