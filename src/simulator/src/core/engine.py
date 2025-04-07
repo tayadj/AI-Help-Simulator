@@ -32,6 +32,10 @@ class Engine:
 			tts_model = 'gpt-4o-mini-tts'
 		)
 
+	async def setup_prompt(self, prompt: str):
+
+		self.agent.instructions = prompt
+
 	# test def
 	async def augment_audio(self, voice_input):
 

@@ -81,8 +81,20 @@ class Application:
 		@self.socketio.on('send_prompt')
 		def handle_send_prompt(data):
 
-			prompt = data.get('prompt')
-			print(f"Received system prompt: {self.system_prompt}")
+			async def process():
+
+				async with grpc.aio.insecure_channel(self.settings.SIMULATOR_PORT.get_secret_value()) as channel: 
+
+					stub = simulator.src.protocol.simulator_pb2_grpc.SimulatorServiceStub(channel)
+
+					request = simulator.src.protocol.simulator_pb2.PromptRequest(
+						prompt = data.get('prompt')
+					)
+
+					response = await stub.ReceivePrompt(request)
+					print(response)
+
+			threading.Thread(target = asyncio.run(process())).start()
 
 		@self.socketio.on('start')
 		def handle_start():

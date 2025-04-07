@@ -62,6 +62,12 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 
 		pass
 
+	async def ReceivePrompt(self, request, context):
+
+		await self.engine.setup_prompt(request.prompt)
+
+		return protocol.simulator_pb2.PromptResponse(status = 'OK')
+
 
 
 async def serve(settings, engine):
