@@ -49,6 +49,11 @@ class SimulatorServiceStub(object):
                 request_serializer=simulator__pb2.HistoryRequest.SerializeToString,
                 response_deserializer=simulator__pb2.HistoryResponse.FromString,
                 _registered_method=True)
+        self.ReceivePrompt = channel.unary_unary(
+                '/simulator.SimulatorService/ReceivePrompt',
+                request_serializer=simulator__pb2.PromptRequest.SerializeToString,
+                response_deserializer=simulator__pb2.PromptResponse.FromString,
+                _registered_method=True)
 
 
 class SimulatorServiceServicer(object):
@@ -66,6 +71,12 @@ class SimulatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReceivePrompt(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SimulatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -78,6 +89,11 @@ def add_SimulatorServiceServicer_to_server(servicer, server):
                     servicer.GetConversationHistory,
                     request_deserializer=simulator__pb2.HistoryRequest.FromString,
                     response_serializer=simulator__pb2.HistoryResponse.SerializeToString,
+            ),
+            'ReceivePrompt': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReceivePrompt,
+                    request_deserializer=simulator__pb2.PromptRequest.FromString,
+                    response_serializer=simulator__pb2.PromptResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -134,6 +150,33 @@ class SimulatorService(object):
             '/simulator.SimulatorService/GetConversationHistory',
             simulator__pb2.HistoryRequest.SerializeToString,
             simulator__pb2.HistoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReceivePrompt(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/simulator.SimulatorService/ReceivePrompt',
+            simulator__pb2.PromptRequest.SerializeToString,
+            simulator__pb2.PromptResponse.FromString,
             options,
             channel_credentials,
             insecure,

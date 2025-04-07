@@ -12,7 +12,16 @@ message HistoryResponse {
 
 message HistoryRequest {}
 
+message PromptRequest {
+    string prompt = 1;
+}
+
+message PromptResponse {
+    string status = 1;
+}
+
 service SimulatorService {
 	rpc StreamAudio(stream AudioStream) returns (stream AudioStream);
 	rpc GetConversationHistory(HistoryRequest) returns (HistoryResponse);
+    rpc ReceivePrompt(PromptRequest) returns (PromptResponse);
 }
