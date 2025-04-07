@@ -48,6 +48,8 @@
     </head>
     <body>
         <h1>AI Help Simulator</h1>
+        <textarea id="promptInput" placeholder="Enter system prompt..." rows="5" cols="40"></textarea>
+        <button id="sendPrompt">Send Prompt</button>
         <button id="start">Start</button>
         <button id="end">End</button>
         <div id="status"></div>
@@ -55,6 +57,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
         <script>
             const socket = io();
+
+            document.getElementById('sendPrompt').addEventListener('click', () => {
+                const prompt = document.getElementById('promptInput').value;
+                socket.emit('send_prompt', { prompt });
+            });
 
             document.getElementById('start').addEventListener('click', () => {
                 socket.emit('start');

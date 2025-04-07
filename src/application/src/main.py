@@ -78,6 +78,12 @@ class Application:
 
 			return flask.render_template('index.html')
 
+		@self.socketio.on('send_prompt')
+		def handle_send_prompt(data):
+
+			self.system_prompt = data.get('prompt')
+			print(f"Received system prompt: {self.system_prompt}")
+
 		@self.socketio.on('start')
 		def handle_start():
 

@@ -35,12 +35,11 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 			print(f"Received chunk of size: {len(chunk.data)} bytes.")
 			
 			yield protocol.simulator_pb2.AudioStream(data = (numpy.frombuffer(chunk.data, dtype = numpy.int16)).tobytes()) # loop-response
-
-		
-		
 		'''
 		# Realtime communication section begin
-		async for event in self.engine.process(voice_input):
+		self.engine.augment_audio(voice_input) # test def
+
+		async for event in self.engine.process():
 
 			print(event)
 
@@ -62,6 +61,7 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 	async def GetConversationHistory(self, request, context):
 
 		pass
+
 
 
 async def serve(settings, engine):
