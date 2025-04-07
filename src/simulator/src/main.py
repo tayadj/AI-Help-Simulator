@@ -29,15 +29,19 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 	async def StreamAudio(self, request_iterator, context):
 
 		print("Streaming audio started...")
-
+		'''
 		async for chunk in request_iterator:
 
 			print(f"Received chunk of size: {len(chunk.data)} bytes.")
 			
 			yield protocol.simulator_pb2.AudioStream(data = (numpy.frombuffer(chunk.data, dtype = numpy.int16)).tobytes()) # loop-response
 		'''
+		#'''
 		# Realtime communication section begin
-		self.engine.augment_audio(voice_input) # test def
+
+		async for chunk in request_iterator:
+
+			await self.engine.augment_audio(chunk) # test def
 
 		async for event in self.engine.process():
 
@@ -46,15 +50,14 @@ class SimulatorService(protocol.simulator_pb2_grpc.SimulatorServiceServicer):
 			if event.type == 'voice_stream_event_audio':
 
 				print(event.data, '\n\n\n')
-				response = protocol.simulator_pb2.AudioStream(data = event.data)
 
-				yield response
+				yield protocol.simulator_pb2.AudioStream(data = event.data)
 					
 			elif event.type == 'voice_stream_event_lifecycle':
 
 				print(f'Lifecycle event: {event.event}')
 		# Realtime communication section end
-		'''
+		#'''
 
 		print("Streaming audio finished...")
 
