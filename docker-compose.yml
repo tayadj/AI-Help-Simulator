@@ -2,7 +2,7 @@ version: "3.9"
 services:
   application:
 	build:
-	  context: ./src/application
+	  context: ./application
 	  dockerfile: Dockerfile
 	ports:
 	  - "5000:5000"
@@ -14,7 +14,7 @@ services:
 
   simulator:
 	build:
-	  context: ./src/simulator
+	  context: ./simulator
 	  dockerfile: Dockerfile
 	ports:
 	  - "50052:50052"
