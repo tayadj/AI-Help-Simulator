@@ -30,11 +30,20 @@ class Engine:
 			workflow = self.workflow,
 			stt_model = 'gpt-4o-mini-transcribe',
 			tts_model = 'gpt-4o-mini-tts'
-		)		
-		
-	async def process(self, voice_input):
+		)
+
+	async def setup_prompt(self, prompt: str):
+
+		self.agent.instructions = prompt
+
+	# test def
+	async def augment_audio(self, voice_input):
 
 		await self.buffer.add_audio(voice_input)
+	# test def
+		
+	async def process(self):
+
 		result = await self.pipeline.run(self.buffer) # if http_proxy environment variable is not set causes socks proxy that's forbidden 
 
 		async for event in result.stream():
